@@ -4,7 +4,13 @@ export interface UploadResponse {
   files: number;
 }
 
-export interface DownloadRequest {
+export interface DownloadFilesRequest {
   groupId?: string;
   password?: string;
+}
+
+export interface DownloadFileRequest {
+  groupId: string;
+  fileId: string;
+  password: string;
 }

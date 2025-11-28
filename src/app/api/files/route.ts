@@ -1,6 +1,6 @@
 import { filesCache } from "@/lib/cache/file-cache";
 import { parseMultipart } from "@/lib/utils/parse-multipart";
-import { DownloadRequest } from "@/lib/utils/types";
+import { DownloadFilesRequest } from "@/lib/utils/types";
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 // ----------------- DOWNLOAD (GET) -----------------
 export async function GET(req: NextRequest) {
   try {
-    const { groupId, password } = (await req.json()) as DownloadRequest;
+    const { groupId, password } = (await req.json()) as DownloadFilesRequest;
 
     if (!groupId?.trim() || !password?.trim()) {
       return NextResponse.json(
