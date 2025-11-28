@@ -52,7 +52,7 @@ export async function GET(
       );
     }
 
-    return new NextResponse(new Uint8Array(file.buffer), {
+    return new NextResponse<DownloadFileResponse>(new Uint8Array(file.buffer), {
       headers: {
         "Content-Type": file.type,
         "Content-Disposition": `attachment; filename=\"${file.filename}\"`,
