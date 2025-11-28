@@ -7,19 +7,20 @@ import { randomUUID } from "node:crypto";
 // ----------------- UPLOAD (POST) -----------------
 export async function POST(req: NextRequest) {
   try {
-    const parsedFiles = await parseMultipart(req);
+    const files = await parseMultipart(req);
 
-    // Create group UUID
     const groupId = randomUUID();
 
-    filesCache.set(groupId, parsedFiles);
+    filesCache.set(groupId, files);
 
     return NextResponse.json({
-      message: "Files uploaded successfully!",
+      message: "Files uploaded successfully",
       groupId,
-      files: parsedFiles.map((f) => {
-        return { fileId: f.fileId, filename: f.filename };
-      }),
+      files: files.map((f) => ({
+        fileId: f.fileId,
+        filename: f.filename,
+        type: f.type,
+      })),
     });
   } catch (err) {
     return NextResponse.json(

@@ -24,11 +24,11 @@ export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
 
   const parsedFiles = await Promise.all(
     files.map(async (file) => ({
+      fileId: randomUUID(),
       buffer: Buffer.from(await file.arrayBuffer()),
       filename: file.name,
       type: file.type,
       password,
-      fileId: randomUUID(),
     })),
   );
 
