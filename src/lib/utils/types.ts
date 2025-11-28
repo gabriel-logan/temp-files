@@ -1,10 +1,30 @@
-export interface UploadResponse {
+import { StoredFile } from "../cache/file-cache";
+
+export interface DefaultErrorResponse {
+  error: string | null;
+}
+
+export interface UploadFilesResponse {
   message: string;
   groupId: string;
-  files: number;
+  files: Omit<StoredFile, "buffer" | "password">[];
+}
+
+export interface DownloadFilesResponse {
+  message: string;
+  files: Omit<StoredFile, "buffer" | "password">[];
+}
+
+export interface DeleteFilesResponse {
+  message: string;
 }
 
 export interface DownloadFilesRequest {
+  groupId?: string;
+  password?: string;
+}
+
+export interface DeleteFilesRequest {
   groupId?: string;
   password?: string;
 }

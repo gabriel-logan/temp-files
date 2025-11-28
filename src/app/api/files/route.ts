@@ -1,11 +1,19 @@
 import { filesCache } from "@/lib/cache/file-cache";
 import { parseMultipart } from "@/lib/utils/parse-multipart";
-import { DownloadFilesRequest } from "@/lib/utils/types";
-import { NextRequest, NextResponse } from "next/server";
+import type {
+  DefaultErrorResponse,
+  DeleteFilesRequest,
+  DeleteFilesResponse,
+  DownloadFilesRequest,
+  DownloadFilesResponse,
+  UploadFilesResponse,
+} from "@/lib/utils/types";
+import { type NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 
-// ----------------- UPLOAD (POST) -----------------
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+): Promise<NextResponse<UploadFilesResponse | DefaultErrorResponse>> {
   try {
     const files = await parseMultipart(req);
 
@@ -22,7 +30,7 @@ export async function POST(req: NextRequest) {
         type: f.type,
       })),
     });
-  } catch (err) {
+  } catch (err: unknown) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Unexpected error" },
       { status: 400 },
@@ -30,8 +38,9 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// ----------------- DOWNLOAD (GET) -----------------
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+): Promise<NextResponse<DownloadFilesResponse | DefaultErrorResponse>> {
   try {
     const { groupId, password } = (await req.json()) as DownloadFilesRequest;
 
@@ -70,18 +79,33 @@ export async function GET(req: NextRequest) {
       files: authorized.map((f) => {
         return { fileId: f.fileId, filename: f.filename };
       }),
+      error: null,
     });
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 }
 
-// ----------------- CLEAR (DELETE) -----------------
-export async function DELETE(req: NextRequest) {
-  const { groupId } = await req.json();
+export async function DELETE(
+  req: NextRequest,
+): Promise<NextResponse<DeleteFilesResponse | DefaultErrorResponse>> {
+  const { groupId, password } = (await req.json()) as DeleteFilesRequest;
 
-  if (!groupId) {
-    return NextResponse.json({ error: "groupId is required" }, { status: 400 });
+  if (!groupId?.trim() || !password?.trim()) {
+    return NextResponse.json(
+      { error: "groupId is required and password is required" },
+      { status: 400 },
+    );
+  }
+
+  const files = filesCache.get(groupId);
+  if (!files) {
+    return NextResponse.json({ error: "Group not found" }, { status: 404 });
+  }
+
+  const authorized = files.find((f) => f.password === password);
+  if (!authorized) {
+    return NextResponse.json({ error: "Incorrect password" }, { status: 403 });
   }
 
   filesCache.delete(groupId);
