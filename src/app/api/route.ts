@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 
 // Cache -> groups -> files
 // Map<groupId, Array<{ buffer, filename, type, password }>>
 const fileCache = new Map<
-  string, // group
+  string,
   Array<{
     buffer: Buffer;
     filename: string;
@@ -12,19 +13,17 @@ const fileCache = new Map<
   }>
 >();
 
-// Parse multipart form-data (multiple files)
+// Parse multipart form-data
 async function parseMultipart(req: NextRequest) {
   const formData = await req.formData();
 
-  const group = formData.get("group")?.toString();
   const password = formData.get("password")?.toString();
 
-  if (!group || !password) {
-    throw new Error("group and password are required");
+  if (!password) {
+    throw new Error("password is required");
   }
 
   const files: File[] = [];
-
   formData.forEach((value, key) => {
     if (key === "files" && value instanceof File) {
       files.push(value);
@@ -44,26 +43,25 @@ async function parseMultipart(req: NextRequest) {
     })),
   );
 
-  return { group, files: parsedFiles };
+  return parsedFiles;
 }
 
-// ----------------- UPLOAD -----------------
+// ----------------- UPLOAD (POST) -----------------
 export async function POST(req: NextRequest) {
   try {
-    const { group, files } = await parseMultipart(req);
+    const parsedFiles = await parseMultipart(req);
 
-    if (!fileCache.has(group)) fileCache.set(group, []);
+    // Create group UUID
+    const groupId = randomUUID();
 
-    const groupFiles = fileCache.get(group)!;
-
-    groupFiles.push(...files);
+    fileCache.set(groupId, parsedFiles);
 
     return NextResponse.json({
       message: "Files uploaded successfully!",
-      group,
-      count: files.length,
+      groupId,
+      files: parsedFiles.length,
     });
-  } catch (err: unknown) {
+  } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Unexpected error" },
       { status: 400 },
@@ -71,67 +69,63 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// ----------------- CLEAR GROUP CACHE -----------------
-export async function PUT(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const group = searchParams.get("group");
+// ----------------- DOWNLOAD (GET) -----------------
+export async function GET(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { groupId, password } = body;
 
-  if (!group) {
-    return NextResponse.json({ error: "group is required" }, { status: 400 });
+    if (!groupId || !password) {
+      return NextResponse.json(
+        { error: "groupId and password are required" },
+        { status: 400 },
+      );
+    }
+
+    const files = fileCache.get(groupId);
+    if (!files) {
+      return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+
+    const authorized = files.filter((f) => f.password === password);
+    if (authorized.length === 0) {
+      return NextResponse.json(
+        { error: "Incorrect password" },
+        { status: 403 },
+      );
+    }
+
+    if (authorized.length === 1) {
+      const file = authorized[0];
+      return new NextResponse(new Uint8Array(file.buffer), {
+        headers: {
+          "Content-Type": file.type,
+          "Content-Disposition": `attachment; filename="${file.filename}"`,
+        },
+      });
+    }
+
+    return NextResponse.json({
+      message: "Multiple files available",
+      files: authorized.map((f) => f.filename),
+    });
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-
-  fileCache.delete(group);
-
-  return NextResponse.json({ message: `Cache for group ${group} cleared!` });
 }
 
-// ----------------- DOWNLOAD -----------------
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const group = searchParams.get("group");
-  const password = searchParams.get("password");
+// ----------------- CLEAR (DELETE) -----------------
+export async function DELETE(req: NextRequest) {
+  const { groupId } = await req.json();
 
-  if (!group || !password) {
-    return NextResponse.json(
-      { error: "group and password are required" },
-      { status: 400 },
-    );
+  if (!groupId) {
+    return NextResponse.json({ error: "groupId is required" }, { status: 400 });
   }
 
-  const groupFiles = fileCache.get(group);
+  fileCache.delete(groupId);
 
-  if (!groupFiles || groupFiles.length === 0) {
-    return NextResponse.json(
-      { error: "No files found in this group" },
-      { status: 404 },
-    );
-  }
-
-  const authorizedFiles = groupFiles.filter((f) => f.password === password);
-
-  if (authorizedFiles.length === 0) {
-    return NextResponse.json(
-      { error: "Incorrect password or no permission" },
-      { status: 403 },
-    );
-  }
-
-  // If there's only one file, download directly
-  if (authorizedFiles.length === 1) {
-    const file = authorizedFiles[0];
-
-    return new NextResponse(new Uint8Array(file.buffer), {
-      headers: {
-        "Content-Type": file.type,
-        "Content-Disposition": `attachment; filename="${file.filename}"`,
-      },
-    });
-  }
-
-  // If multiple files, return a list (can create zip later)
   return NextResponse.json({
-    message: "Multiple files available",
-    files: authorizedFiles.map((f) => f.filename),
+    message: `Group ${groupId} cleared`,
   });
 }
 
