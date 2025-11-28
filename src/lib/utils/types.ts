@@ -30,7 +30,21 @@ export interface DeleteFilesRequest {
 }
 
 export interface DownloadFileRequest {
-  groupId: string;
+  groupId?: string;
+  fileId?: string;
+  password?: string;
+}
+
+export interface DownloadFileResponse {
   fileId: string;
-  password: string;
+  filename: string;
+}
+
+export interface DeleteFileRequest {
+  groupId?: string;
+  fileId?: string;
+}
+
+export interface DeleteFileResponse {
+  message: string;
 }

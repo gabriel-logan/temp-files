@@ -1,13 +1,26 @@
 import { filesCache } from "@/lib/cache/file-cache";
-import { NextRequest, NextResponse } from "next/server";
+import {
+  DefaultErrorResponse,
+  DeleteFileRequest,
+  DeleteFileResponse,
+  DownloadFileRequest,
+  DownloadFileResponse,
+} from "@/lib/utils/types";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+): Promise<NextResponse<DownloadFileResponse | DefaultErrorResponse>> {
   try {
-    const { groupId, fileId, password } = await req.json();
+    const { groupId, fileId, password } =
+      (await req.json()) as DownloadFileRequest;
 
-    if (!groupId || !password || !fileId) {
+    if (!groupId?.trim() || !password?.trim() || !fileId?.trim()) {
       return NextResponse.json(
-        { error: "groupId, fileId and password are required" },
+        {
+          error:
+            "groupId, fileId and password are required and cannot be empty",
+        },
         { status: 400 },
       );
     }
@@ -40,13 +53,15 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(
+  req: NextRequest,
+): Promise<NextResponse<DeleteFileResponse | DefaultErrorResponse>> {
   try {
-    const { groupId, fileId } = await req.json();
+    const { groupId, fileId } = (await req.json()) as DeleteFileRequest;
 
-    if (!groupId || !fileId) {
+    if (!groupId?.trim() || !fileId?.trim()) {
       return NextResponse.json(
-        { error: "groupId and fileId are required" },
+        { error: "groupId and fileId are required and cannot be empty" },
         { status: 400 },
       );
     }
