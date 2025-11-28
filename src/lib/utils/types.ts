@@ -20,19 +20,19 @@ export interface DeleteFilesResponse {
 }
 
 export interface DownloadFilesRequest {
-  groupId?: string;
-  password?: string;
+  groupId?: unknown;
+  password?: unknown;
 }
 
 export interface DeleteFilesRequest {
-  groupId?: string;
-  password?: string;
+  groupId?: unknown;
+  password?: unknown;
 }
 
 export interface DownloadFileRequest {
-  groupId?: string;
-  fileId?: string;
-  password?: string;
+  groupId?: unknown;
+  fileId?: unknown;
+  password?: unknown;
 }
 
 export interface DownloadFileResponse {
@@ -41,8 +41,8 @@ export interface DownloadFileResponse {
 }
 
 export interface DeleteFileRequest {
-  groupId?: string;
-  fileId?: string;
+  groupId?: unknown;
+  fileId?: unknown;
 }
 
 export interface DeleteFileResponse {

@@ -44,9 +44,16 @@ export async function GET(
   try {
     const { groupId, password } = (await req.json()) as DownloadFilesRequest;
 
-    if (!groupId?.trim() || !password?.trim()) {
+    if (typeof groupId !== "string" || typeof password !== "string") {
       return NextResponse.json(
-        { error: "groupId and password are required and cannot be empty" },
+        { error: "groupId and password must be strings" },
+        { status: 400 },
+      );
+    }
+
+    if (!groupId.trim() || !password.trim()) {
+      return NextResponse.json(
+        { error: "groupId and password cannot be empty" },
         { status: 400 },
       );
     }
@@ -91,9 +98,16 @@ export async function DELETE(
 ): Promise<NextResponse<DeleteFilesResponse | DefaultErrorResponse>> {
   const { groupId, password } = (await req.json()) as DeleteFilesRequest;
 
-  if (!groupId?.trim() || !password?.trim()) {
+  if (typeof groupId !== "string" || typeof password !== "string") {
     return NextResponse.json(
-      { error: "groupId is required and password is required" },
+      { error: "groupId and password must be strings" },
+      { status: 400 },
+    );
+  }
+
+  if (!groupId.trim() || !password.trim()) {
+    return NextResponse.json(
+      { error: "groupId and password cannot be empty" },
       { status: 400 },
     );
   }
