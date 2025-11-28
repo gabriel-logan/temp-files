@@ -1,71 +1,137 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Cache
+// Cache -> groups -> files
+// Map<groupId, Array<{ buffer, filename, type, password }>>
 const fileCache = new Map<
-  string,
-  { buffer: Buffer; filename: string; type: string }
+  string, // group
+  Array<{
+    buffer: Buffer;
+    filename: string;
+    type: string;
+    password: string;
+  }>
 >();
 
-// Função auxiliar para ler body multipart (upload)
+// Parse multipart form-data (multiple files)
 async function parseMultipart(req: NextRequest) {
   const formData = await req.formData();
-  const file = formData.get("file");
 
-  if (!file || !(file instanceof File)) {
-    throw new Error("Nenhum arquivo enviado ou tipo inválido");
+  const group = formData.get("group")?.toString();
+  const password = formData.get("password")?.toString();
+
+  if (!group || !password) {
+    throw new Error("group and password are required");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
+  const files: File[] = [];
 
-  return { buffer, filename: file.name, type: file.type };
+  formData.forEach((value, key) => {
+    if (key === "files" && value instanceof File) {
+      files.push(value);
+    }
+  });
+
+  if (files.length === 0) {
+    throw new Error("No files were uploaded");
+  }
+
+  const parsedFiles = await Promise.all(
+    files.map(async (file) => ({
+      buffer: Buffer.from(await file.arrayBuffer()),
+      filename: file.name,
+      type: file.type,
+      password,
+    })),
+  );
+
+  return { group, files: parsedFiles };
 }
 
 // ----------------- UPLOAD -----------------
 export async function POST(req: NextRequest) {
   try {
-    const { buffer, filename, type } = await parseMultipart(req);
+    const { group, files } = await parseMultipart(req);
 
-    // Armazena no Map
-    fileCache.set("file", { buffer, filename, type });
+    if (!fileCache.has(group)) fileCache.set(group, []);
+
+    const groupFiles = fileCache.get(group)!;
+
+    groupFiles.push(...files);
 
     return NextResponse.json({
-      message: "Arquivo enviado com sucesso!",
-      filename,
-      type,
-      size: buffer.length,
+      message: "Files uploaded successfully!",
+      group,
+      count: files.length,
     });
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      return NextResponse.json({ error: err.message }, { status: 400 });
-    }
-
-    return NextResponse.json({ error: "Erro inesperado" }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Unexpected error" },
+      { status: 400 },
+    );
   }
 }
 
-// ----------------- LIMPAR CACHE -----------------
-export async function PUT() {
-  fileCache.delete("file");
+// ----------------- CLEAR GROUP CACHE -----------------
+export async function PUT(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const group = searchParams.get("group");
 
-  return NextResponse.json({ message: "Cache limpo com sucesso!" });
+  if (!group) {
+    return NextResponse.json({ error: "group is required" }, { status: 400 });
+  }
+
+  fileCache.delete(group);
+
+  return NextResponse.json({ message: `Cache for group ${group} cleared!` });
 }
 
 // ----------------- DOWNLOAD -----------------
-export async function GET() {
-  const cached = fileCache.get("file");
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const group = searchParams.get("group");
+  const password = searchParams.get("password");
 
-  if (!cached) {
+  if (!group || !password) {
     return NextResponse.json(
-      { error: "Nenhum arquivo em cache" },
+      { error: "group and password are required" },
+      { status: 400 },
+    );
+  }
+
+  const groupFiles = fileCache.get(group);
+
+  if (!groupFiles || groupFiles.length === 0) {
+    return NextResponse.json(
+      { error: "No files found in this group" },
       { status: 404 },
     );
   }
 
-  return new NextResponse(new Uint8Array(cached.buffer), {
-    headers: {
-      "Content-Type": cached.type,
-      "Content-Disposition": `attachment; filename="${cached.filename}"`,
-    },
+  const authorizedFiles = groupFiles.filter((f) => f.password === password);
+
+  if (authorizedFiles.length === 0) {
+    return NextResponse.json(
+      { error: "Incorrect password or no permission" },
+      { status: 403 },
+    );
+  }
+
+  // If there's only one file, download directly
+  if (authorizedFiles.length === 1) {
+    const file = authorizedFiles[0];
+
+    return new NextResponse(new Uint8Array(file.buffer), {
+      headers: {
+        "Content-Type": file.type,
+        "Content-Disposition": `attachment; filename="${file.filename}"`,
+      },
+    });
+  }
+
+  // If multiple files, return a list (can create zip later)
+  return NextResponse.json({
+    message: "Multiple files available",
+    files: authorizedFiles.map((f) => f.filename),
   });
 }
 
