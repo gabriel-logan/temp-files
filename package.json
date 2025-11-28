@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "format": "prettier --write **.{js,jsx,ts,tsx,json,css,md,yml,yaml}",
-    "format:check": "prettier --check **.{js,jsx,ts,tsx,json,css,md,yml,yaml}"
+    "format": "prettier --write **.{js,jsx,ts,tsx,json,css,md,yml,yaml,mjs}",
+    "format:check": "prettier --check **.{js,jsx,ts,tsx,json,css,md,yml,yaml,mjs}"
   },
   "dependencies": {
     "next": "16.0.5",
