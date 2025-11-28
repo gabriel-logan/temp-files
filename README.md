@@ -13,19 +13,19 @@ npm run dev
 ### 📤 Upload (POST)
 
 ```bash
-curl -X POST -F "file=@tsconfig.json" https://temp-ebon-sigma.vercel.app/api
+curl -X POST -F "file=@tsconfig.json" https://temp-files-lake.vercel.app/api
 ```
 
 ### 📥 Download (GET)
 
 ```bash
-curl -O https://temp-ebon-sigma.vercel.app/api
+curl -O https://temp-files-lake.vercel.app/api
 ```
 
 ### 🧹 Limpar cache (PUT)
 
 ```bash
-curl -X PUT https://temp-ebon-sigma.vercel.app/api
+curl -X PUT https://temp-files-lake.vercel.app/api
 ```
 
 ---
@@ -37,19 +37,19 @@ curl -X PUT https://temp-ebon-sigma.vercel.app/api
 ### 📤 Upload (POST)
 
 ```powershell
-curl.exe -X POST -F "file=@tsconfig.json" https://temp-ebon-sigma.vercel.app/api
+curl.exe -X POST -F "file=@tsconfig.json" https://temp-files-lake.vercel.app/api
 ```
 
 ### 📥 Download (GET)
 
 ```powershell
-curl.exe -O https://temp-ebon-sigma.vercel.app/api
+curl.exe -O https://temp-files-lake.vercel.app/api
 ```
 
 ### 🧹 Limpar cache (PUT)
 
 ```powershell
-curl.exe -X PUT https://temp-ebon-sigma.vercel.app/api
+curl.exe -X PUT https://temp-files-lake.vercel.app/api
 ```
 
 ---
