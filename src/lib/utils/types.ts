@@ -5,6 +5,6 @@ export interface UploadResponse {
 }
 
 export interface DownloadRequest {
-  groupId: string;
-  password: string;
+  groupId?: string;
+  password?: string;
 }

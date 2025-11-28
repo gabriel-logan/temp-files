@@ -6,8 +6,8 @@ export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
 
   const password = formData.get("password")?.toString();
 
-  if (!password) {
-    throw new Error("password is required");
+  if (!password?.trim()) {
+    throw new Error("password is required and cannot be empty");
   }
 
   const files: File[] = [];

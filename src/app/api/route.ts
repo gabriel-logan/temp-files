@@ -1,5 +1,6 @@
 import { filesCache } from "@/lib/cache/file-cache";
 import { parseMultipart } from "@/lib/utils/parse-multipart";
+import { DownloadRequest } from "@/lib/utils/types";
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 
@@ -29,12 +30,11 @@ export async function POST(req: NextRequest) {
 // ----------------- DOWNLOAD (GET) -----------------
 export async function GET(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { groupId, password } = body;
+    const { groupId, password } = (await req.json()) as DownloadRequest;
 
-    if (!groupId || !password) {
+    if (!groupId?.trim() || !password?.trim()) {
       return NextResponse.json(
-        { error: "groupId and password are required" },
+        { error: "groupId and password are required and cannot be empty" },
         { status: 400 },
       );
     }
