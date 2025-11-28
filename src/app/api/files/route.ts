@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "Files uploaded successfully!",
       groupId,
-      files: parsedFiles.length,
+      files: parsedFiles.map((f) => {
+        return { fileId: f.fileId, filename: f.filename };
+      }),
     });
   } catch (err) {
     return NextResponse.json(
@@ -64,7 +66,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       message: "Multiple files available",
-      files: authorized.map((f) => f.filename),
+      files: authorized.map((f) => {
+        return { fileId: f.fileId, filename: f.filename };
+      }),
     });
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });

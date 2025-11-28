@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { StoredFile } from "../cache/file-cache";
+import { randomUUID } from "node:crypto";
 
 export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
   const formData = await req.formData();
@@ -27,6 +28,7 @@ export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
       filename: file.name,
       type: file.type,
       password,
+      fileId: randomUUID(),
     })),
   );
 

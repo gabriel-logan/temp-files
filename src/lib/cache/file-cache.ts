@@ -1,4 +1,5 @@
 export type StoredFile = {
+  fileId: string; // unique ID
   buffer: Buffer;
   filename: string;
   type: string;
