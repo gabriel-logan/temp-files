@@ -39,3 +39,51 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { groupId, fileId } = await req.json();
+
+    if (!groupId || !fileId) {
+      return NextResponse.json(
+        { error: "groupId and fileId are required" },
+        { status: 400 },
+      );
+    }
+
+    const files = filesCache.get(groupId);
+
+    if (!files) {
+      return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+
+    const remaining = files.filter((f) => f.fileId !== fileId);
+
+    if (remaining.length === files.length) {
+      return NextResponse.json(
+        { error: "File not found in this group" },
+        { status: 404 },
+      );
+    }
+
+    if (remaining.length === 0) {
+      filesCache.delete(groupId);
+
+      return NextResponse.json({
+        message: "File deleted and group was empty, so group removed",
+        groupId,
+      });
+    }
+
+    filesCache.set(groupId, remaining);
+
+    return NextResponse.json({
+      message: "File deleted successfully",
+      groupId,
+      fileId,
+      remainingFiles: remaining.length,
+    });
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+}
