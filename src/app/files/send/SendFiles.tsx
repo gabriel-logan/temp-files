@@ -20,23 +20,59 @@ export default function SendFiles() {
     setTimeout(() => setCopied(null), 1200);
   }
 
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
+    }
+  }
+
   return (
     <>
       <form
         action={formAction}
-        className="mt-6 flex w-full max-w-md flex-col gap-6 rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl shadow-black/30"
+        className="mt-6 flex w-full max-w-md flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl shadow-black/30"
       >
         <label className="text-lg font-medium text-gray-200">
           Select Files to Send:
         </label>
 
+        <label
+          htmlFor="files"
+          className="mt-2 flex cursor-pointer items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-gray-200 transition hover:border-blue-500 hover:text-white hover:shadow-[0_0_20px_rgba(0,150,255,0.6)]"
+        >
+          📁 Select Files
+        </label>
+
         <input
+          id="files"
           type="file"
           name="files"
           multiple
-          className="w-full cursor-pointer rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-gray-200 file:rounded-md file:border-none file:bg-zinc-700 file:text-gray-300"
+          className="hidden"
+          onChange={handleFileChange}
           required
         />
+
+        <p className="text-sm text-gray-400">
+          {selectedFiles.length === 0
+            ? "No files selected"
+            : `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`}
+        </p>
+
+        {selectedFiles.length > 0 && (
+          <ul className="max-h-36 space-y-1 overflow-y-auto rounded-md border border-zinc-700 bg-zinc-800 text-sm text-gray-300">
+            {selectedFiles.map((file) => (
+              <li
+                key={file.name}
+                className="rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-gray-300"
+              >
+                {file.name}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="relative">
           <label className="text-lg font-medium text-gray-200">Password</label>
