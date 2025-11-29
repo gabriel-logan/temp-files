@@ -8,7 +8,7 @@ import {
 } from "@/lib/utils/types";
 import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<DownloadFileResponse | DefaultErrorResponse>> {
   try {

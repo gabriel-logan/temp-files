@@ -13,6 +13,7 @@ export interface UploadFilesResponse {
 export interface DownloadFilesResponse {
   message: string;
   files: Omit<StoredFile, "buffer" | "password">[];
+  groupId: string;
 }
 
 export interface DeleteFilesResponse {
