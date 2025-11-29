@@ -75,7 +75,7 @@ export async function deleteGroupAction(groupId: string, password: string) {
       return;
     }
 
-    alert("Group deleted successfully.");
+    alert("Group deleted successfully. Refetch the data to see the changes.");
   } catch (error) {
     console.error("Error deleting group:", error);
     alert("An error occurred while deleting the group.");
@@ -115,7 +115,7 @@ export async function deleteFileAction(
       return;
     }
 
-    alert("File deleted successfully.");
+    alert("File deleted successfully. Refetch the data to see the changes.");
   } catch (error) {
     console.error("Error deleting file:", error);
     alert("An error occurred while deleting the file.");
