@@ -2,8 +2,8 @@
 
 ## Locales
 
--- [English](README.md)
--- [Português (Brasil)](README_PT.md)
+- [English](README.md)
+- [Português (Brasil)](README_PT.md)
 
 Base URL:
 
