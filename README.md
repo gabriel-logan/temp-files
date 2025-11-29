@@ -11,6 +11,8 @@ Base URL:
 https://temp-files-lake.vercel.app
 ```
 
+You can access the base URL in your browser to interact with the web interface.
+
 This documentation explains how to use the entire API **via cURL**, with examples for **Linux/MacOS** and **Windows (PowerShell)**.
 
 ---
