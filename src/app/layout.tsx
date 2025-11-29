@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Send Files",
-  description: "A simple file sharing app",
+  description:
+    "A simple file sharing app for sending temporary files securely.",
   authors: {
     name: "Gabriel Logan",
     url: "https://github.com/gabriel-logan",
