@@ -61,6 +61,21 @@ export default function FetchFiles() {
         </button>
       </form>
 
+      {files && files.length > 0 && (
+        <>
+          <button
+            className="mt-6 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+            onClick={() => {}}
+          >
+            Delete Group
+          </button>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">
+            IMPORTANT: Deleting the group is irreversible and will remove all
+            associated files permanently.
+          </p>
+        </>
+      )}
+
       <ul className="mt-6 w-full max-w-md space-y-4 p-4">
         {files ? (
           files.map((file) => (
