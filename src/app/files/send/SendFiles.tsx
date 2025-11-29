@@ -4,7 +4,7 @@ import { sendFilesAction } from "@/actions";
 import { useActionState } from "react";
 
 export default function SendFiles() {
-  const [filesSended, formAction] = useActionState(sendFilesAction, {
+  const [filesSended, formAction, isSending] = useActionState(sendFilesAction, {
     files: [],
     groupId: "",
     message: "",
@@ -22,6 +22,7 @@ export default function SendFiles() {
           name="files"
           multiple
           className="w-full rounded border p-2"
+          required
         />
 
         <label className="text-lg font-medium">Password</label>
@@ -30,13 +31,15 @@ export default function SendFiles() {
           name="password"
           placeholder="Password"
           className="w-full rounded border p-2"
+          required
         />
 
         <button
           type="submit"
-          className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          disabled={isSending}
+          className={`rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50 ${isSending && "animate-pulse"}`}
         >
-          Send Files
+          {isSending ? "Sending..." : "Send Files"}
         </button>
       </form>
 
