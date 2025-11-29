@@ -38,6 +38,10 @@ export default function Home() {
         Do not upload data that you want to store permanently.
       </p>
 
+      <p className="text-center text-sm text-red-400">
+        All files will be deleted at midnight UTC daily.
+      </p>
+
       <p className="mt-6 text-center text-sm text-gray-500">
         This application is useful for quickly sharing files without creating an
         account. It provides a simple web interface and an API for uploading,
