@@ -3,6 +3,7 @@
 import { downloadFile } from "@/actions/client";
 import { fetchFilesAction } from "@/actions/server";
 import { useActionState, useState } from "react";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 export default function FetchFiles() {
   const [files, formAction, isFetching] = useActionState(
@@ -12,6 +13,7 @@ export default function FetchFiles() {
 
   const [groupId, setGroupId] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
 
   return (
     <>
@@ -30,16 +32,25 @@ export default function FetchFiles() {
           onChange={(e) => setGroupId(e.target.value)}
         />
 
-        <label className="text-lg font-medium">Password:</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full rounded border p-2"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="relative">
+          <label className="text-lg font-medium">Password:</label>
+          <input
+            type={passwordIsVisible ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            className="w-full rounded border p-2"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="absolute top-9 right-3 cursor-pointer text-gray-500"
+            onClick={() => setPasswordIsVisible(!passwordIsVisible)}
+          >
+            {passwordIsVisible ? <BsEye size={24} /> : <BsEyeSlash size={24} />}
+          </button>
+        </div>
 
         <button
           type="submit"

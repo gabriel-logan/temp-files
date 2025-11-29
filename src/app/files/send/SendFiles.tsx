@@ -1,13 +1,16 @@
 "use client";
 
 import { sendFilesAction } from "@/actions/server";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 export default function SendFiles() {
   const [filesSended, formAction, isSending] = useActionState(
     sendFilesAction,
     null,
   );
+
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
 
   return (
     <>
@@ -24,14 +27,23 @@ export default function SendFiles() {
           required
         />
 
-        <label className="text-lg font-medium">Password</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full rounded border p-2"
-          required
-        />
+        <div className="relative">
+          <label className="text-lg font-medium">Password</label>
+          <input
+            type={passwordIsVisible ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            className="w-full rounded border p-2"
+            required
+          />
+          <button
+            type="button"
+            className="absolute top-9 right-3 cursor-pointer text-gray-500"
+            onClick={() => setPasswordIsVisible(!passwordIsVisible)}
+          >
+            {passwordIsVisible ? <BsEye size={24} /> : <BsEyeSlash size={24} />}
+          </button>
+        </div>
 
         <button
           type="submit"
