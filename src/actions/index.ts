@@ -24,7 +24,7 @@ export async function fetchFilesAction(
     );
 
     const data = (await response.json()) as {
-      files?: StoredFile[];
+      files: StoredFile[];
     };
 
     return data.files ?? null;
@@ -36,33 +36,39 @@ export async function fetchFilesAction(
 }
 
 export async function sendFilesAction(
-  _: UploadFilesResponse,
+  _: UploadFilesResponse | null,
   formData: FormData,
 ) {
-  const files = formData.getAll("files");
-  const password = formData.get("password");
+  try {
+    const files = formData.getAll("files");
+    const password = formData.get("password");
 
-  const payload = new FormData();
+    const payload = new FormData();
 
-  files.forEach((file) => {
-    if (file instanceof Blob) {
-      payload.append("files", file);
+    files.forEach((file) => {
+      if (file instanceof Blob) {
+        payload.append("files", file);
+      }
+    });
+
+    if (typeof password === "string") {
+      payload.append("password", password);
     }
-  });
 
-  if (typeof password === "string") {
-    payload.append("password", password);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/files`,
+      {
+        method: "POST",
+        body: payload,
+      },
+    );
+
+    const data = (await response.json()) as UploadFilesResponse;
+
+    return data;
+  } catch (error) {
+    console.error("Error uploading files:", error);
+
+    return null;
   }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/files`,
-    {
-      method: "POST",
-      body: payload,
-    },
-  );
-
-  const data = (await response.json()) as UploadFilesResponse;
-
-  return data;
 }

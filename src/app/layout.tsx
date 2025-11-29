@@ -21,6 +21,15 @@ export const metadata: Metadata = {
     name: "Gabriel Logan",
     url: "https://github.com/gabriel-logan",
   },
+  keywords: [
+    "file sharing",
+    "temporary files",
+    "send files",
+    "file upload",
+    "file download",
+    "secure file sharing",
+  ],
+  classification: "File Sharing Application",
 };
 
 export default function RootLayout({

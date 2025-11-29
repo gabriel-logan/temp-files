@@ -4,11 +4,10 @@ import { sendFilesAction } from "@/actions";
 import { useActionState } from "react";
 
 export default function SendFiles() {
-  const [filesSended, formAction, isSending] = useActionState(sendFilesAction, {
-    files: [],
-    groupId: "",
-    message: "",
-  });
+  const [filesSended, formAction, isSending] = useActionState(
+    sendFilesAction,
+    null,
+  );
 
   return (
     <>
@@ -48,7 +47,7 @@ export default function SendFiles() {
         will not be shown again and cannot be recovered.
       </p>
 
-      {filesSended.groupId && (
+      {filesSended && filesSended.groupId && (
         <>
           <p className="mt-4 text-green-600">Files sent successfully!</p>
 
