@@ -1,6 +1,7 @@
 # API Usage Documentation via CURL
 
 ## Locales
+
 -- [English](README.md)
 -- [Português (Brasil)](README_PT.md)
 
