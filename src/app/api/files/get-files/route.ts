@@ -27,6 +27,7 @@ export async function POST(
     }
 
     const files = filesCache.get(groupId);
+
     if (!files) {
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
     }
@@ -41,11 +42,11 @@ export async function POST(
 
     if (authorized.length === 1) {
       const file = authorized[0];
-      return new NextResponse(new Uint8Array(file.buffer), {
-        headers: {
-          "Content-Type": file.type,
-          "Content-Disposition": `attachment; filename="${file.filename}"`,
-        },
+
+      return NextResponse.json({
+        message: "Single file",
+        files: [{ fileId: file.fileId, filename: file.filename }],
+        error: null,
       });
     }
 

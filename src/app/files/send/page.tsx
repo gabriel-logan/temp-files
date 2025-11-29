@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SendFiles from "./SendFiles";
 
 export default async function SendPage() {
@@ -7,6 +8,10 @@ export default async function SendPage() {
       <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
         This is where you can send your files.
       </p>
+
+      <Link href="/files" className="mt-4 text-blue-500 underline">
+        Go to Fetch Files
+      </Link>
 
       <SendFiles />
     </main>

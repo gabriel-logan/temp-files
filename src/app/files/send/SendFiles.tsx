@@ -57,7 +57,7 @@ export default function SendFiles() {
           <ul className="mt-4 space-y-2">
             {filesSended.files?.map((file) => (
               <li key={file.fileId} className="text-gray-400">
-                {file.filename} ({file.fileId})
+                {file.filename}: ({file.fileId})
               </li>
             ))}
           </ul>

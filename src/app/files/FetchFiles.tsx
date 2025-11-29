@@ -47,13 +47,13 @@ export default function FetchFiles() {
         {files ? (
           files.map((file) => (
             <Link key={file.fileId} href={`/api/file/${file.fileId}`}>
-              <li className="w-full max-w-md rounded-lg border p-4">
+              <li className="w-full rounded-lg border p-4">
                 <h2 className="text-2xl font-semibold">{file.filename}</h2>
               </li>
             </Link>
           ))
         ) : (
-          <li className="w-full max-w-md rounded-lg border p-4">
+          <li className="w-full rounded-lg border p-4">
             <p className="text-lg text-gray-600 dark:text-gray-300">
               No files found.
             </p>
