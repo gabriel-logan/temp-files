@@ -1,6 +1,10 @@
 "use client";
 
-import { downloadFile } from "@/actions/client";
+import {
+  deleteFileAction,
+  deleteGroupAction,
+  downloadFile,
+} from "@/actions/client";
 import { fetchFilesAction } from "@/actions/server";
 import { useActionState, useState } from "react";
 import { BsEye, BsEyeSlash, BsTrashFill } from "react-icons/bs";
@@ -14,14 +18,6 @@ export default function FetchFiles() {
   const [groupId, setGroupId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
-
-  const deleteFile = (fileId: string) => {
-    console.log("DELETE FILE:", fileId);
-  };
-
-  const deleteGroup = () => {
-    console.log("DELETE GROUP");
-  };
 
   return (
     <>
@@ -74,7 +70,7 @@ export default function FetchFiles() {
       {files && files.length > 0 && (
         <div className="mt-8 w-full max-w-md">
           <button
-            onClick={deleteGroup}
+            onClick={() => deleteGroupAction(groupId, password)}
             className="relative w-full rounded-xl border border-red-700 bg-red-900 px-6 py-3 font-semibold text-red-200 shadow-[0_0_15px_rgba(255,0,0,0.3)] transition-all duration-300 hover:border-red-500 hover:text-white hover:shadow-[0_0_25px_rgba(255,0,0,0.6)]"
           >
             Delete Group
@@ -104,7 +100,7 @@ export default function FetchFiles() {
               </button>
 
               <button
-                onClick={() => deleteFile(file.fileId)}
+                onClick={() => deleteFileAction(groupId, file.fileId, password)}
                 className="ml-4 rounded-lg border border-red-700 bg-red-800/40 p-2 transition-all hover:border-red-500 hover:bg-red-700 hover:text-white"
               >
                 <BsTrashFill size={20} className="text-red-400" />

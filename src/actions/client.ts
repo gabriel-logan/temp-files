@@ -52,6 +52,7 @@ export async function deleteGroupAction(groupId: string, password: string) {
     const confirmDelete = confirm(
       "Are you sure you want to delete this group and all its files? This action cannot be undone.",
     );
+
     if (!confirmDelete) {
       return;
     }
@@ -90,6 +91,7 @@ export async function deleteFileAction(
     const confirmDelete = confirm(
       "Are you sure you want to delete this file? This action cannot be undone.",
     );
+
     if (!confirmDelete) {
       return;
     }
