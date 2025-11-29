@@ -1,6 +1,6 @@
 "use client";
 
-import { sendFilesAction } from "@/actions";
+import { sendFilesAction } from "@/actions/server";
 import { useActionState } from "react";
 
 export default function SendFiles() {
