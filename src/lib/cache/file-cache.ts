@@ -1,3 +1,5 @@
+import "server-only";
+
 export type StoredFile = {
   fileId: string; // unique ID
   buffer: Buffer;
