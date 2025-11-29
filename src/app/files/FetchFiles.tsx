@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 export default function FetchFiles() {
-  const [files, formAction] = useActionState(fetchFilesAction, null);
+  const [files, formAction, isFetching] = useActionState(
+    fetchFilesAction,
+    null,
+  );
 
   return (
     <>
@@ -19,6 +22,7 @@ export default function FetchFiles() {
           name="groupId"
           placeholder="Group ID"
           className="w-full rounded border p-2"
+          required
         />
 
         <label className="text-lg font-medium">Password:</label>
@@ -27,13 +31,15 @@ export default function FetchFiles() {
           name="password"
           placeholder="Password"
           className="w-full rounded border p-2"
+          required
         />
 
         <button
           type="submit"
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          disabled={isFetching}
+          className={`rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50 ${isFetching && "animate-pulse"}`}
         >
-          Fetch Files
+          {isFetching ? "Fetching..." : "Fetch Files"}
         </button>
       </form>
 
