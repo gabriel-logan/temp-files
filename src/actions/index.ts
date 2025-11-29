@@ -37,11 +37,13 @@ export async function sendFilesAction(
   const password = formData.get("password");
 
   const payload = new FormData();
+
   files.forEach((file) => {
     if (file instanceof Blob) {
       payload.append("files", file);
     }
   });
+
   if (typeof password === "string") {
     payload.append("password", password);
   }

@@ -5,7 +5,7 @@ import { useActionState } from "react";
 
 export default function SendFiles() {
   const [filesSended, formAction] = useActionState(sendFilesAction, {
-    files: null,
+    files: [],
     groupId: "",
     message: "",
   });

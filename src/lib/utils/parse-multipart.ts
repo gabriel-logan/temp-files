@@ -20,7 +20,7 @@ export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
     }
   });
 
-  if (files.length === 0) {
+  if (files.length === 0 || files[0].size === 0) {
     throw new Error("No files were uploaded");
   }
 
