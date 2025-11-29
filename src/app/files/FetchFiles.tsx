@@ -15,7 +15,6 @@ export default function FetchFiles() {
   const [password, setPassword] = useState("");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
 
-  // Stub — você implementa depois
   const deleteFile = (fileId: string) => {
     console.log("DELETE FILE:", fileId);
   };
