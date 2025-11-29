@@ -40,15 +40,20 @@ export default function SendFiles() {
         </button>
       </form>
 
+      <p className="mt-4 text-red-500">
+        IMPORTANT: Save the information below to access your files later. It
+        will not be shown again and cannot be recovered.
+      </p>
+
       {filesSended.groupId && (
         <>
           <p className="mt-4 text-green-600">Files sent successfully!</p>
 
-          <p className="mt-2 text-gray-700">Group ID: {filesSended.groupId}</p>
-          <p className="mt-2 text-gray-700">Message: {filesSended.message}</p>
+          <p className="mt-2 text-gray-200">Group ID: {filesSended.groupId}</p>
+          <p className="mt-2 text-gray-200">Message: {filesSended.message}</p>
           <ul className="mt-4 space-y-2">
             {filesSended.files?.map((file) => (
-              <li key={file.fileId} className="text-gray-800">
+              <li key={file.fileId} className="text-gray-400">
                 {file.filename} ({file.fileId})
               </li>
             ))}
