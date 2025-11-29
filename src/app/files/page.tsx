@@ -1,9 +1,6 @@
-import { filesCache } from "@/lib/cache/file-cache";
-import Link from "next/link";
+import FetchFiles from "./FetchFiles";
 
-export default function FilesPage() {
-  const files = Array.from(filesCache.values()).flat();
-
+export default async function FilesPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <h1 className="text-4xl font-bold">Files Page</h1>
@@ -11,15 +8,7 @@ export default function FilesPage() {
         This is where you can manage your files.
       </p>
 
-      <ul className="mt-6 space-y-4">
-        {files.map((file) => (
-          <Link key={file.fileId} href={`/api/file/${file.fileId}`}>
-            <li className="w-full max-w-md rounded-lg border p-4">
-              <h2 className="text-2xl font-semibold">{file.filename}</h2>
-            </li>
-          </Link>
-        ))}
-      </ul>
+      <FetchFiles />
     </main>
   );
 }
