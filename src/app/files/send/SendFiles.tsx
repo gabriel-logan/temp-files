@@ -34,7 +34,7 @@ export default function SendFiles() {
           type="file"
           name="files"
           multiple
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-gray-200 file:rounded-md file:border-none file:bg-zinc-700 file:text-gray-300"
+          className="w-full cursor-pointer rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-gray-200 file:rounded-md file:border-none file:bg-zinc-700 file:text-gray-300"
           required
         />
 
