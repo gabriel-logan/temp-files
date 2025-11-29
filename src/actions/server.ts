@@ -10,6 +10,14 @@ export async function fetchFilesAction(
   const groupId = formData.get("groupId");
   const password = formData.get("password");
 
+  if (typeof groupId !== "string" || typeof password !== "string") {
+    throw new Error("Invalid form data");
+  }
+
+  if (groupId.trim().length !== 36) {
+    throw new Error("Invalid group ID, must be a valid UUID v4");
+  }
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/files/get-files`,
