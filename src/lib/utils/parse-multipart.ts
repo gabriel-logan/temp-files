@@ -5,6 +5,8 @@ import { randomUUID } from "node:crypto";
 export async function parseMultipart(req: NextRequest): Promise<StoredFile[]> {
   const formData = await req.formData();
 
+  console.log("Form Data:", formData);
+
   const password = formData.get("password")?.toString();
 
   if (!password?.trim()) {
