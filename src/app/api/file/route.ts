@@ -67,18 +67,23 @@ export async function DELETE(
   req: NextRequest,
 ): Promise<NextResponse<DeleteFileResponse | DefaultErrorResponse>> {
   try {
-    const { groupId, fileId } = (await req.json()) as DeleteFileRequest;
+    const { groupId, fileId, password } =
+      (await req.json()) as DeleteFileRequest;
 
-    if (typeof groupId !== "string" || typeof fileId !== "string") {
+    if (
+      typeof groupId !== "string" ||
+      typeof fileId !== "string" ||
+      typeof password !== "string"
+    ) {
       return NextResponse.json(
-        { error: "groupId and fileId must be strings" },
+        { error: "groupId, fileId and password must be strings" },
         { status: 400 },
       );
     }
 
-    if (!groupId.trim() || !fileId.trim()) {
+    if (!groupId.trim() || !fileId.trim() || !password.trim()) {
       return NextResponse.json(
-        { error: "groupId and fileId cannot be empty" },
+        { error: "groupId, fileId and password cannot be empty" },
         { status: 400 },
       );
     }
@@ -87,6 +92,17 @@ export async function DELETE(
 
     if (!files) {
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+
+    const file = files.find(
+      (f) => f.fileId === fileId && f.password === password,
+    );
+
+    if (!file) {
+      return NextResponse.json(
+        { error: "File not found or invalid password" },
+        { status: 403 },
+      );
     }
 
     const remaining = files.filter((f) => f.fileId !== fileId);

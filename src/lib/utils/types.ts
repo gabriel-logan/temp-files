@@ -44,6 +44,7 @@ export interface DownloadFileResponse {
 export interface DeleteFileRequest {
   groupId?: unknown;
   fileId?: unknown;
+  password?: unknown;
 }
 
 export interface DeleteFileResponse {
