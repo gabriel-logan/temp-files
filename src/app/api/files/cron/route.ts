@@ -4,6 +4,9 @@ export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("Authorization");
 
+    console.log("Cron job triggered");
+    console.log("Authorization Header:", authHeader);
+
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
